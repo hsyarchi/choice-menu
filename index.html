@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="우리 팀 오늘 점심 뭐 먹지? 결정 장애를 해결해 주는 트렌디한 팀 메뉴 투표 선택기!">
+    <title>런치 룰렛 - 팀 메뉴 투표 선택기</title>
+    <!-- Google Fonts & Pretendard -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" href="style.css?v=1.0.9">
+</head>
+<body>
+    <!-- Background dynamic glow shapes -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+
+    <header class="app-header">
+        <h1 class="header-title">
+            <span class="header-logo">👥</span>
+            <span>런치 룰렛 (팀 투표판)</span>
+        </h1>
+        <div class="header-controls">
+            <button id="themeToggleBtn" class="control-btn" title="테마 변경">☀️ 라이트 분위기</button>
+            <button id="soundToggleBtn" class="control-btn" title="소리 켜기/끄기">🔊 소리 켜짐</button>
+            <div class="mode-selector">
+                <button id="modeRouletteBtn" class="mode-btn active">🎡 가중치 룰렛</button>
+                <button id="modeSlotBtn" class="mode-btn">🎰 슬롯머신</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="app-container">
+        <!-- Left Section: Team Manager & Menu Manager -->
+        <section class="section-left" aria-label="팀원 및 메뉴 관리">
+            
+            <!-- 1. Team Members Card -->
+            <div class="glass-card team-card">
+                <h2 class="card-title">👥 팀원 관리</h2>
+                
+                <!-- Add Team Member Form -->
+                <form id="addMemberForm" class="add-member-form" onsubmit="return false;">
+                    <div class="input-group">
+                        <input type="text" id="memberNameInput" placeholder="팀원 이름 입력 (예: 홍길동)" maxlength="10" required>
+                        <button type="submit" id="addMemberBtn" class="btn-add">추가</button>
+                    </div>
+                </form>
+
+                <p class="helper-text" id="voterHelperText">💡 팀원을 클릭하고 아래 메뉴 리스트에서 메뉴를 클릭하면 투표가 진행됩니다.</p>
+                
+                <!-- Active Member List -->
+                <div class="member-list-wrapper">
+                    <div id="memberList" class="member-list">
+                        <!-- Dynamic member badges -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Menu List Card -->
+            <div class="glass-card menu-manager">
+                <h2 class="card-title">🍗 메뉴 후보 및 득표 현황</h2>
+                
+                <!-- Category Shortcuts -->
+                <div class="category-tabs">
+                    <button class="tab-btn active" data-category="all">전체</button>
+                    <button class="tab-btn" data-category="korean">한식</button>
+                    <button class="tab-btn" data-category="chinese">중식</button>
+                    <button class="tab-btn" data-category="japanese">일식</button>
+                    <button class="tab-btn" data-category="western">양식</button>
+                    <button class="tab-btn" data-category="etc">기타</button>
+                </div>
+
+                <!-- Add Menu Form -->
+                <form id="addMenuForm" class="add-menu-form" onsubmit="return false;">
+                    <div class="input-group">
+                        <input type="text" id="menuNameInput" placeholder="메뉴 추가 (예: 돈까스)" maxlength="20" required>
+                        <select id="menuEmojiSelect" title="이모지 선택">
+                            <option value="🍲">🍲</option>
+                            <option value="🍕">🍕</option>
+                            <option value="🍔">🍔</option>
+                            <option value="🍣">🍣</option>
+                            <option value="🍜">🍜</option>
+                            <option value="🍛">🍛</option>
+                            <option value="🍖">🍖</option>
+                            <option value="🥪">🥪</option>
+                            <option value="🥗">🥗</option>
+                            <option value="🌮">🌮</option>
+                            <option value="☕">☕</option>
+                            <option value="🍰">🍰</option>
+                        </select>
+                        <select id="menuCatSelect" title="카테고리 선택">
+                            <option value="korean">한식</option>
+                            <option value="chinese">중식</option>
+                            <option value="japanese">일식</option>
+                            <option value="western">양식</option>
+                            <option value="etc" selected>기타</option>
+                        </select>
+                        <button type="submit" id="addMenuBtn" class="btn-add">추가</button>
+                    </div>
+                </form>
+
+                <!-- Bulk Controls -->
+                <div class="bulk-controls">
+                    <button id="clearVotesBtn" class="text-link-btn highlight-btn">🗳️ 투표 전체 초기화</button>
+                    <span class="divider">|</span>
+                    <button id="resetPresetBtn" class="text-link-btn">초기 데이터 복원</button>
+                </div>
+
+                <!-- Live Leaderboard Scoreboard -->
+                <div class="scoreboard-panel" id="scoreboardPanel">
+                    <h3 class="scoreboard-title">📊 실시간 득표 현황</h3>
+                    <div id="scoreboardList" class="scoreboard-list">
+                        <!-- Dynamic progress bars filled by app.js -->
+                    </div>
+                </div>
+
+                <!-- Menu Item List -->
+                <div class="menu-list-wrapper">
+                    <ul id="menuList" class="menu-list">
+                        <!-- Dynamic content filled by app.js -->
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Section: Dynamic Selector Screen -->
+        <section class="section-right" aria-label="결정 룰렛판 및 방식">
+            <div class="glass-card selector-panel">
+                
+                <!-- Decision Mode Selection Header -->
+                <div class="decision-header">
+                    <span class="decision-label">결정 방식:</span>
+                    <div class="decision-tabs">
+                        <button id="decideWeightedBtn" class="decide-tab-btn active">🎯 가중치 추첨</button>
+                        <button id="decideEqualBtn" class="decide-tab-btn">⚖️ 선택 메뉴 균등 추첨</button>
+                        <button id="decideMajorityBtn" class="decide-tab-btn">👑 다수결 즉시 당선</button>
+                    </div>
+                </div>
+
+                <!-- 1. ROULETTE WHEEL CONTAINER -->
+                <div id="rouletteContainer" class="game-container active">
+                    <div class="wheel-outer">
+                        <div class="wheel-pointer">▼</div>
+                        <div class="wheel-wrapper">
+                            <svg id="rouletteSvg" viewBox="0 0 500 500">
+                                <!-- Dynamic Slices here -->
+                            </svg>
+                            <div class="wheel-center-pin">
+                                <button id="spinBtn" class="btn-spin">SPIN</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. SLOT MACHINE CONTAINER -->
+                <div id="slotContainer" class="game-container">
+                    <div class="slot-machine-outer">
+                        <div class="slot-window">
+                            <div class="slot-reels" id="slotReels">
+                                <div class="slot-reel" id="reel1">
+                                    <div class="reel-strip">
+                                        <!-- Dynamic foods -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slot-overlay"></div>
+                        </div>
+                        <button id="leverBtn" class="btn-lever">🎰 릴 돌리기</button>
+                    </div>
+                </div>
+
+                <!-- Decider Helper controls -->
+                <div class="location-helper">
+                    <label for="locationInput">🔍 주변 식당 검색 위치:</label>
+                    <input type="text" id="locationInput" value="강남역" placeholder="예: 여의도역, 홍대">
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Canvas for particle effect (Confetti / Sparkles) -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Result Modal Dialog -->
+    <div id="resultModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-content glass-card">
+            <button id="modalCloseBtn" class="modal-close" aria-label="닫기">&times;</button>
+            <div class="modal-header">
+                <span class="badge" id="modalBadge">CONGRATULATIONS</span>
+            </div>
+            <div class="modal-body">
+                <p class="modal-sub">오늘 우리 팀의 선택은?</p>
+                <div class="result-emoji" id="resultEmoji">🍲</div>
+                <h2 class="result-title glow-text" id="resultTitle">부대찌개</h2>
+                <p class="result-cat" id="resultCategory">한식 (3표 획득)</p>
+                
+                <!-- Voter Info -->
+                <div class="voter-info-box" id="voterInfoBox">
+                    <span class="voter-title">투표한 팀원:</span>
+                    <div class="voter-names" id="voterNames">
+                        <span class="voter-badge">홍길동</span>
+                    </div>
+                </div>
+                
+                <div class="search-links">
+                    <p class="search-tip">주변 맛집 정보를 검색해 보세요!</p>
+                    <div class="search-buttons">
+                        <a id="naverSearchLink" href="#" target="_blank" rel="noopener noreferrer" class="search-btn naver">
+                            <span class="btn-icon">N</span> 네이버 지도 검색
+                        </a>
+                        <a id="kakaoSearchLink" href="#" target="_blank" rel="noopener noreferrer" class="search-btn kakao">
+                            <span class="btn-icon">K</span> 카카오 맵 검색
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modalRetryBtn" class="btn-primary">다시 결정하기 🔄</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js?v=1.0.7"></script>
+</body>
+</html>
